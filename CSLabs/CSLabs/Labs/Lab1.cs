@@ -1,67 +1,69 @@
-﻿using CSLabs.Extensions.Lab1;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CSLabs.Labs;
-public class Lab1(string SequencesText, string CommandsText)
+public class Lab1()
 {
-    private readonly List<string> _proteinDataList = SequencesText.Split("\r\n").ToList();
-
-    private StringBuilder _geneData = new();
-
-    private int _commandCount = 1;
-
-    public string Func1()
+    public void Func1()
     {
-        var commandList = CommandsText.Split("\r\n").ToList();
-
-        foreach (string command in commandList)
+        Console.WriteLine("Введите последовательность");
+        string sequence = Console.ReadLine()!;
+        if (sequence.Any(c => new[] { '1', '2', '3', '4', '5', '6', '7', '8', '9' }.Contains(c)))
         {
-            var commandComponents = command.Split("\t");
-            switch (commandComponents[0])
-            {
-                case "search":
-                    Search(commandComponents[1]);
-                    break;
-                case "diff":
-                    Diff(commandComponents[1], commandComponents[2]);
-                    break;
-                    //case "mode":
-                    //    Mode(commandComponents[1]);
-                    //    break;
+            string decodedSequence = RLDecoding(sequence);
+            Console.WriteLine($"Раскодированная последовательность: {decodedSequence}");
+        }
+        else
+        {
+            string encodedSequence = RLEncoding(sequence);
+            Console.WriteLine($"Закодированная последовательность: {encodedSequence}");
 
+        }
+    }
+
+    public string RLEncoding(string sequence)
+    {
+        StringBuilder sequenceSB = new();
+        for (int i = 0; i < sequence.Length; i++)
+        {
+            char c = sequence[i];
+            int end = i;
+            while (end < sequence.Length && sequence[i] == sequence[end])
+            {
+                end++;
+            }
+            int length = end - i;
+            if (length > 2)
+            {
+                i += length - 1;
+                sequenceSB.Append(length);
+            }
+            sequenceSB.Append(c);
+        }
+
+        return sequenceSB.ToString();
+    }
+
+    public string RLDecoding(string sequence)
+    {
+        StringBuilder sequenceSB = new();
+        for (int i = 0; i < sequence.Length; i++)
+        {
+            if (int.TryParse(sequence[i].ToString(), out int n))
+            {
+                sequenceSB.Append(sequence[i + 1], n);
+                i++;
+            }
+            else
+            {
+                sequenceSB.Append(sequence[i]);
             }
         }
-        return _geneData.ToString();
+        return sequenceSB.ToString();
     }
 
-    private void Search(string sequence)
-    {
-        foreach (var proteinData in _proteinDataList)
-        {
-            var dataComponents = proteinData.Split("\t");
-            if (dataComponents[2].Contains(sequence))
-            {
-                _geneData.AddGeneDataSearch(_commandCount, sequence, organism: dataComponents[1], protein: dataComponents[0]);
-                _commandCount++;
-                return;
-            }
-        }
-        _geneData.AddGeneDataSearch(_commandCount, sequence);
-
-    }
-
-    private int Diff(string protein1, string protein2)
-    {
-        return 1;
-    }
-
-    //private List<(string, int)> Mode(string protein)
-    //{
-
-    //}
 }
 

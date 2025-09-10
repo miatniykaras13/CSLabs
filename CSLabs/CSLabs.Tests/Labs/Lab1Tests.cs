@@ -1,4 +1,5 @@
 ﻿using CSLabs.Labs;
+using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,33 @@ namespace CSLabs.Tests.Labs
 {
     public class Lab1Tests
     {
-        private readonly Lab1 _lab;
-        private readonly string _sequencesText = "6.8 kDa mitochondrial proteolipid\tHomo sapiens (Human)\tMLQSIIKNIWIPMKPYYTKVYQEIWIGMGLMGFIVYKIRAADKRSKALKASAPAPGHH\r\nPre-T/NK cell associated protein 6H9A\tHomo sapiens (Human)\tMRLSCLVIITITAELCVPLMLCAHGEQAQLPRGVCVLGTGTSPAWSPVLLGRLPFPH\r\nAlcohol dehydrogenase\tBrachydanio rerio\tMDTTGKVIKCKAAVAWEAGKPLTIEEVEVAPPKAHEVRVKIHATGVCHTDAYTLSGSDPEGLFPVILGHEGAGTVESVGEGVTK\r\nRNA-dependent RNA polymerase [Fragment]\tSan Miguel sea lion virus\tPSGMPLTSIINSLNHCLMVGCAVVKALEDSGVQATWNIFDSMDLFTYGDDGVYIVPPLISSVMPKVFSNLRQFGLKPTRTDKTDAEITPIPADEPVEFLKRTIVRTENGIRALLDKSSII\r\nCecropin\tBombyx mori (Silk moth)\tRWKIFKKIEKVGQNIRDGIVKAGPAVAVVGQAATI";
-        private readonly string _commandsText = "search\tSIIK\r\nsearch\tPLML\r\nsearch\tFK3I\r\ndiff\t6.8 kDa mitochondrial proteolipid\tAlcohol dehydrogenase\r\ndiff\tRNA-dependent RNA polymerase [Fragment]\tAlcohol dehydrogenase\r\ndiff\tCecropin\tPre-T/NK cell associated protein 6H9A\r\nmode\tCecropin\r\nmode\tAlcohol dehydrogenase";
+        public readonly Lab1 _lab;
+
         public Lab1Tests()
         {
-            _lab = new Lab1(_sequencesText, _commandsText);
+            _lab = new Lab1();
+        }
+
+        [Theory]
+        [InlineData("AAAAAAAATATTTCGCTTTTCAAAAATTGTCAGATGAGAGAAAAAATAAAA", "8ATA3TCGC4TC5ATTGTCAGATGAGAG6AT4A")]
+        [InlineData("ATATCGCTCATGTCAGATGAGAGATA", "ATATCGCTCATGTCAGATGAGAGATA")]
+        [InlineData("AATCCCCCTTTCAAAATTTTTGGTTCAGATGAGAGATA", "AAT5C3TC4A5TGGTTCAGATGAGAGATA")]
+        public void Lab1_RLEncoding_ReturnString(string sequence, string expected)
+        {
+            var result = _lab.RLEncoding(sequence);
+
+            result.Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData("8ATA3TCGC4TC5ATTGTCAGATGAGAG6AT4A", "AAAAAAAATATTTCGCTTTTCAAAAATTGTCAGATGAGAGAAAAAATAAAA")]
+        [InlineData("ATATCGCTCATGTCAGATGAGAGATA", "ATATCGCTCATGTCAGATGAGAGATA")]
+        [InlineData("AAT5C3TC4A5TGGTTCAGATGAGAGATA", "AATCCCCCTTTCAAAATTTTTGGTTCAGATGAGAGATA")]
+        public void Lab1_RLDecoding_ReturnString(string sequence, string expected)
+        {
+            var result = _lab.RLDecoding(sequence);
+
+            result.Should().Be(expected);
         }
 
     }
