@@ -1,4 +1,4 @@
-﻿using CSLabs.Labs;
+﻿using CSLabs.Lab;
 
 namespace CSLabs
 {
