@@ -14,6 +14,15 @@ namespace CSLabs.Extensions
             return sb;
         }
 
+        public static StringBuilder AppendMode(this StringBuilder sb, int number, string protein)
+        {
+            sb.AddLine();
+            sb.AddCommandNumber(number);
+            sb.Append($"\tmode\t{protein}\n");
+            sb.Append("amino-acids occurs:\n");
+            return sb;
+        }
+
         public static StringBuilder AddCommandNumber(this StringBuilder sb, int number)
         {
             sb.Append(string.Format("{0:d3}\t", number));

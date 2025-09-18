@@ -18,9 +18,9 @@ public class Lab1()
 
     public void Func1()
     {
-        string sequencePath = @"E:\CSProjects\CSLabs\CSLabs\CSLabs\sequences.txt";
-        string commandsPath = @"E:\CSProjects\CSLabs\CSLabs\CSLabs\commands.txt";
-        string genedataPath = @"E:\CSProjects\CSLabs\CSLabs\CSLabs\genedata.txt";
+        string sequencePath = @"C:\Users\Admin\source\repos\miatniykaras13\CSLabs\CSLabs\CSLabs\sequences.txt";
+        string commandsPath = @"C:\Users\Admin\source\repos\miatniykaras13\CSLabs\CSLabs\CSLabs\commands.txt";
+        string genedataPath = @"C:\Users\Admin\source\repos\miatniykaras13\CSLabs\CSLabs\CSLabs\genedata.txt";
 
         string sequences = File.ReadAllText(sequencePath);
         string commands = File.ReadAllText(commandsPath);
@@ -30,7 +30,7 @@ public class Lab1()
         _proteins = GetAllGeneData();
 
 
-        var genedata = new StringBuilder();
+        _genedata.AppendLine("Vladislav Gaiduk\nGenetic Search");
 
         var commandsList = commands.Split("\r\n").ToList();
 
@@ -59,7 +59,30 @@ public class Lab1()
 
     private void Mode(string protein)
     {
-       
+        _genedata.AppendMode(_commandNumber, protein);
+        if (!TryFindByProtein(protein, out var gene))
+        {
+            _genedata.AppendLine("MISSING");
+        }
+        string aminoAcid = gene.AminoAcids;
+        string distinctProtein = new(aminoAcid.ToCharArray().Distinct().ToArray());
+        var occurrences = distinctProtein.Select(c => aminoAcid.Count(r => r == c));
+        var aminoAcids = distinctProtein.Zip<char, int>(occurrences).ToList();
+
+        aminoAcids = aminoAcids.OrderByDescending(c => c.Item2).ToList();
+        var mostRecent = new List<(char, int)>
+        {
+            aminoAcids[0]
+        };
+
+        int i = 1;
+        while (aminoAcids[i].Item2 == aminoAcids[i - 1].Item2)
+        {
+            mostRecent.Add(aminoAcids[i]);
+            i++;
+        }
+        mostRecent = mostRecent.OrderBy(c => c.Item1).ToList();
+        _genedata.AppendLine($"{mostRecent[0].Item1}\t\t{mostRecent[0].Item2}");
     }
 
     private void Diff(string protein1, string protein2)
@@ -71,8 +94,9 @@ public class Lab1()
             _genedata.AppendLine("MISSING");
             return;
         }
-        string acid1 = gene1.AminoAcids;
-        string acid2 = gene2.AminoAcids;
+
+        string acid1 = RLDecoding(gene1.AminoAcids);
+        string acid2 = RLDecoding(gene2.AminoAcids);
 
         if (acid1.Length > acid2.Length)
         {
@@ -82,7 +106,7 @@ public class Lab1()
                     diff++;
             }
         }
-        else 
+        else
         {
             for (int i = 0; i < acid1.Length; i++)
             {
@@ -119,13 +143,13 @@ public class Lab1()
 
     private void Search(string sequence)
     {
-        _genedata.AppendSearch(sequence, _commandNumber);
+
         string decodedSequence = sequence;
         if (IsEncoded(sequence))
         {
             decodedSequence = RLDecoding(sequence);
         }
-
+        _genedata.AppendSearch(decodedSequence, _commandNumber);
         for (int i = 0; i < _proteins.Count; i++)
         {
             if (_proteins[i].AminoAcids.Contains(decodedSequence))
@@ -138,7 +162,7 @@ public class Lab1()
 
     }
 
-    private bool TryFindByProtein(string protein1, string protein2, out GeneticData gene1, out GeneticData gene2) 
+    private bool TryFindByProtein(string protein1, string protein2, out GeneticData gene1, out GeneticData gene2)
     {
         gene1 = default;
         gene2 = default;
@@ -155,8 +179,24 @@ public class Lab1()
             return false;
         }
         return true;
-        
-    } 
+
+    }
+
+    private bool TryFindByProtein(string protein, out GeneticData gene)
+    {
+        gene = default;
+        foreach (var geneticData in _proteins)
+        {
+            if (string.Equals(geneticData.Protein, protein))
+                gene = geneticData;
+        }
+        if (EqualityComparer<GeneticData>.Default.Equals(gene, default))
+        {
+            return false;
+        }
+        return true;
+
+    }
 
 
 
@@ -185,11 +225,17 @@ public class Lab1()
         foreach (var proteinData in geneData)
         {
             var proteinDataList = proteinData.Split("\t");
+            if (!IsValidSequence(proteinDataList[2]))
+            {
+                Console.WriteLine("Неверный формат аминокислоты.");
+            }
             list.Add(new(proteinDataList[0], proteinDataList[1], proteinDataList[2]));
         }
         return list;
     }
 
-    private bool IsEncoded(string sequence) => sequence.Any(c => char.IsDigit(c)) ? true : false;
+    private bool IsEncoded(string sequence) => sequence.Any(c => char.IsDigit(c));
+
+    private bool IsValidSequence(string sequence) => !sequence.Any(c => new[] { 'B', 'J', 'O', 'U', 'X', 'Z'}.Contains(c)); 
 }
 

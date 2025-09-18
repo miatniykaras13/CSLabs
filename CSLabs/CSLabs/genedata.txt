@@ -1,33 +1,35 @@
+Vladislav Gaiduk
+Genetic Search
 --------------------------------------------------------------------------
 
-001		search	SIIK
+001		mode	PREDICTED: similar to double homeobox
+amino-acids occurs:
+R		17
+--------------------------------------------------------------------------
+
+002		search	LKSQ
 organism							protein
-Homo sapiens (Human)			6.8 kDa mitochondrial proteolipid
+Homo sapiens (Human)			TRAF interacting protein TANK isoform b
 --------------------------------------------------------------------------
 
-002		search	PLML
+003		diff	C-FLIP AMPA glutamate	6.8 kDa mitochondrial proteolipid
+amino-acids difference:
+58
+--------------------------------------------------------------------------
+
+004		mode	Lsm3 protein
+amino-acids occurs:
+E		11
+--------------------------------------------------------------------------
+
+005		diff	Lsm3 protein	Drosophila melanogaster [Fragment]
+amino-acids difference:
+156
+--------------------------------------------------------------------------
+
+006		search	TPRFGKTFDA
 organism							protein
-Homo sapiens (Human)			Pre-T/NK cell associated protein 6H9A
---------------------------------------------------------------------------
-
-003		search	FK3I
-organism							protein
-NOT FOUND
---------------------------------------------------------------------------
-
-004		diff	6.7 kDa mitochondrial proteolipid	Alcohol dehydrogenase
-amino-acids difference:
-MISSING
---------------------------------------------------------------------------
-
-005		diff	RNA-dependent RNA polymerase [Fragment]	Alcohol dehydrogenase
-amino-acids difference:
-115
---------------------------------------------------------------------------
-
-006		diff	Cecropin	Pre-T/NK cell associated protein 6H9A
-amino-acids difference:
-56
+Homo sapiens (Human)			pituitary tumor-transforming protein 1
 --------------------------------------------------------------------------
 
 
