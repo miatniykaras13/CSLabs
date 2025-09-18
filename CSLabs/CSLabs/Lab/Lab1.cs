@@ -185,11 +185,9 @@ public class Lab1()
     private bool TryFindByProtein(string protein, out GeneticData gene)
     {
         gene = default;
-        foreach (var geneticData in _proteins)
-        {
-            if (string.Equals(geneticData.Protein, protein))
-                gene = geneticData;
-        }
+        foreach (var geneticData in _proteins.Where(geneticData => string.Equals(geneticData.Protein, protein)))
+            gene = geneticData;
+        
         if (EqualityComparer<GeneticData>.Default.Equals(gene, default))
         {
             return false;
@@ -199,13 +197,12 @@ public class Lab1()
     }
 
 
-
-    public string RLDecoding(string sequence)
+    private string RLDecoding(string sequence)
     {
         StringBuilder sequenceSB = new();
         for (int i = 0; i < sequence.Length; i++)
         {
-            if (int.TryParse(sequence[i].ToString(), out int n))
+            if (int.TryParse(sequence[i].ToString(), out var n))
             {
                 sequenceSB.Append(sequence[i + 1], n);
                 i++;
@@ -220,7 +217,7 @@ public class Lab1()
 
     private List<GeneticData> GetAllGeneData()
     {
-        List<GeneticData> list = new();
+        List<GeneticData> list = [];
         var geneData = _sequences.Split("\r\n");
         foreach (var proteinData in geneData)
         {
